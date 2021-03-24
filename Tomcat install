@@ -1,0 +1,28 @@
+#Установка Tomcat
+groupadd tomcat
+useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+cd /opt/
+wget https://apache-mirror.rbc.ru/pub/apache/tomcat/tomcat-8/v8.5.61/bin/apache-tomcat-8.5.61.tar.gz
+tar -xzvf apache-tomcat-8.5.6.tar.gz
+mv apache-tomcat tomcat
+sudo chown -R tomcat: /opt/tomcat
+cd /etc/systemd/system/
+nano tomcat.service
+[Unit]
+Description=Apache Tomcat 8 Servlet Container
+After=syslog.target network.target
+[Service]
+User=tomcat
+Group=tomcat
+Type=forking
+Environment=CATALINA_PID=/opt/tomcat/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
+systemctl daemon-reload 
+systemctl start tomcat 
+systemctl enable tomcat
